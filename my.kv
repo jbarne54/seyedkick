@@ -1,0 +1,155 @@
+<MyMainApp>
+
+
+WindowManager:
+    SecondWindow:
+    ThirdWindow:
+    
+         
+<SecondWindow>:
+    name: "second"
+    GridLayout:
+        cols:1
+        size: root.width, root.height    
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'bottom'
+        spacing:20
+        padding:20, 20
+        
+        canvas.before:
+            Color:
+                rgba: (0,0,0,1)
+            Rectangle:
+                source:'imagetoaudio.png'
+                size: root.width, root.height
+                pos: self.pos  
+    CameraClick:
+        orientation: 'vertical'
+        Camera:
+            id: camera
+            resolution: (1920, 1080)
+            play: True
+    GridLayout:
+        cols: 1
+        Button:
+            text: 'Capture'
+            background_color:0,0,0,0
+            size_hint: None, None
+            size: 2000, 2000
+            pos_hint: {'center': (.5, .17)}
+            on_press: root.spinner_clicked(spinner_id.text), root.capture(), root.imageToAudio()
+            on_release:
+                app.root.current = "third"
+                root.manager.transition.direction = "left"
+                root.play_sound() 
+    BoxLayout:
+        cols:1
+    AnchorLayout:
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1  # white
+        size: self.parent.size
+        anchor_x: 'center'
+        anchor_y: 'top'
+        size: root.width, root.height 
+        size: root.width, root.height    
+        Spinner:
+            id: spinner_id
+            background_color:  0.47, 2, 0.078, 1
+            size_hint: None, None
+            size: 200, 75 
+            pos_hint: {'center': (.5, .27)}
+            id: spinner_id
+            # the text is the default state
+            text:"Language"
+            values:
+                ["English", "Afrikaans", "Arabic", "Bengali",
+                "Bulgarian","Catalan","Czech","Danish","Dutch",
+                "French","German","Greek","Gujarati","Hindi","Hungarian",
+                "Icelandic","Indonesian","Italian","Japanese","Kannada",
+                "Korean","Latvian","Malay","Malayalam","Mandairn","Norwegian",
+                "Polish","Portuguese","Punjabi","Romanian","Russian","Serbian",
+                "Slovak","Spanish","Swedish","Tamil","Telugu","Thai","Turkish",
+                "Ukrainian","Vietnamese"]
+            on_text: root.spinner_clicked(spinner_id.text)
+    BoxLayout:
+        cols:1
+    AnchorLayout:
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1  # white
+        size: self.parent.size
+        anchor_x: 'center'
+        anchor_y: 'bottom'
+        size: root.width, root.height    
+        Button:
+            text: "Quit"
+            background_color:  0.47, 2, 0.078, 1
+            size_hint: None, None
+            size: 200, 75
+            pos: (1,1)
+            on_press: app.stop()
+
+<ThirdWindow>:
+    name: "third"
+   
+    GridLayout:
+        cols:1
+        size: root.width, root.height
+
+    SoundPlayer:  
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'bottom'
+        spacing:20
+        padding:20, 20
+        canvas.before:
+            Color:
+                rgba: (1, 1, 1, 1)
+            Rectangle:
+                source:'audio.jfif'
+                size: root.width, root.height
+                pos: self.pos  
+        Label:
+            font_size:40
+            size_hint_y: 1.8
+
+            BoxLayout:
+
+                spacing: 20
+                padding: 80, 0,0,0
+
+                Button:
+                    text: 'Back to Camera'
+                    background_color:  0.47, 2, 0.078, 1
+                    size_hint: None, None
+                    size: 200, 60                        
+                    pos_hint: {'center': (.5, .17)}
+                    on_press:
+                        root.manager.transition.direction = 'right'
+                        root.manager.current = 'second'
+                         
+                Button:
+                    text: "Replay"
+                    background_color: 0.47, 2, 0.078, 1
+                    size_hint: None, None
+                    size: 200, 60 
+                    pos_hint: {'center': (.5, .07)}
+                    on_press: root.play_sound() 
+            
+                Button:
+                    text: "Quit"
+                    background_color: 0.47, 2, 0.078, 1
+                    size_hint: None, None
+                    size: 200, 60 
+                    pos_hint: {'center': (.5, .07)}
+                    on_press: app.stop()
+
+                     
+
+
+
+                     
+
+
