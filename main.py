@@ -17,11 +17,12 @@ from kivy.uix.camera import Camera
 from kivy.core.camera import Camera
 from kivy.uix.image import Image
 from kivy.graphics.texture import Texture
-from kivy.clock import Clock
+from kivy.clock import mainthread
 from kivy.core.audio import SoundLoader
 from kivy.uix.floatlayout import FloatLayout
 from os import path
 from pydub import AudioSegment
+from kivy.uix.scatter import Scatter
 import cv2
 import time
 import argparse 
@@ -40,19 +41,20 @@ from kivy.uix.dropdown import DropDown
 from google.cloud import translate
 from imutils.object_detection import non_max_suppression
 import numpy as np
-import argparse
 import time
 import cv2
 from kivy.properties import DictProperty 
 import six
 from google.cloud import translate_v2 as translate
 from kivy.clock import Clock
+from pathlib import Path
+from kivy.properties import StringProperty
+from kivy.uix.scrollview import ScrollView 
 
 
 
 
-
-os.environ['GOOGLE_APPLICATION_CREDENTIALS']= r'C:\Users\justi\Desktop\IT 7133 Enterprise AI Applications\project\venv\newproject-331015-62b47af390c1.json'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS']= r'C:\Users\justi\Desktop\IT 7133 Enterprise AI Applications\project\venv\new.json'
 Config.set('graphics', 'resizable', False)
 Config.set('graphics','width', '360')
 Config.set('graphics', 'height', '540')
@@ -124,13 +126,35 @@ class SecondWindow(Screen):
             sound.play()
 
 
-class ThirdWindow(Screen):
+class ThirdWindow(Screen): 
+
+    def on_pre_enter(self):
+        self.showtext()
+        self.ids.scrollview.scroll_y = 1
+        
+    def showtext(self):
+        with open("transtext.txt","r") as f:
+            self.ids['_label'].text = f.read()
+        self.ids.scrollview.scroll_y = 1
+
     def play_sound(self):
         sound = SoundLoader.load('output.mp3')
         if sound:
             sound.play()
-
-
+    def stop_sound(self):
+        sound = SoundLoader.load('output.mp3')
+        if sound: 
+            sound.stop()
+    
+    with open('transtext.txt', 'w') as f: 
+        f.write('Welcome')
+        f.close()
+        
+    show = open(r"transtext.txt","r") 
+    fileoutput = StringProperty(show.read())
+    show.close()
+    
+        
 class WindowManager(ScreenManager):
     pass
 
@@ -167,8 +191,11 @@ class CameraClick(BoxLayout):
 
 class MyMainApp(App):
     def build(self):
-        Window.clearcolor = (0, 0, 1, 1)
+        return ThirdWindow()
+    def build(self):
         return kv
+    Window.clearcolor = (0, 0, 0, 1)
+     
 
 
 def detectText(infile):
@@ -198,12 +225,17 @@ def detectText(infile):
     result = translate_client.translate(text, target_language=target)
 
     text = result["translatedText"]
-
+    
     print(u"Translation: {}".format(result["translatedText"]))
     print(u"Detected source language: {}".format(
         result["detectedSourceLanguage"]))
-
+    with open('transtext.txt', 'w') as f:
+        f.write(text)
+        f.close() 
+           
     return text
+  
+
 
 
 def text_to_speech(text, outfile):
@@ -229,13 +261,12 @@ def text_to_speech(text, outfile):
     with open(outfile, "wb") as out:
         out.write(response.audio_content)
         print('Audio content written to file ' + outfile)
-
-
+    
+        
 class ImageToAudio:
     def imageToAudio():
         infile = "img.png"
         outfile = "output.mp3"
-
         text_to_speak = detectText(infile)
         text_to_speech(text_to_speak, outfile)
 

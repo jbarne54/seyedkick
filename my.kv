@@ -49,14 +49,16 @@ WindowManager:
         canvas.before:
             Color:
                 rgba: 1, 1, 1, 1  # white
+             
         size: self.parent.size
         anchor_x: 'center'
         anchor_y: 'top'
         size: root.width, root.height 
-        size: root.width, root.height    
+        
         Spinner:
             id: spinner_id
-            background_color:  0.47, 2, 0.078, 1
+            background_normal: ''
+            background_color:  1, .647, 0, .8
             size_hint: None, None
             size: 200, 75 
             pos_hint: {'center': (.5, .27)}
@@ -85,7 +87,8 @@ WindowManager:
         size: root.width, root.height    
         Button:
             text: "Quit"
-            background_color:  0.47, 2, 0.078, 1
+            background_normal: ''
+            background_color:  1, .647, 0, .8
             size_hint: None, None
             size: 200, 75
             pos: (1,1)
@@ -93,63 +96,108 @@ WindowManager:
 
 <ThirdWindow>:
     name: "third"
-   
+    id: screen_three
+    on_pre_enter: root.showtext()
     GridLayout:
         cols:1
         size: root.width, root.height
-
-    SoundPlayer:  
-    AnchorLayout:
-        anchor_x: 'center'
-        anchor_y: 'bottom'
-        spacing:20
-        padding:20, 20
-        canvas.before:
-            Color:
-                rgba: (1, 1, 1, 1)
-            Rectangle:
-                source:'audio.jfif'
-                size: root.width, root.height
-                pos: self.pos  
-        Label:
-            font_size:40
-            size_hint_y: 1.8
-
-            BoxLayout:
-
-                spacing: 20
-                padding: 80, 0,0,0
-
-                Button:
-                    text: 'Back to Camera'
-                    background_color:  0.47, 2, 0.078, 1
-                    size_hint: None, None
-                    size: 200, 60                        
-                    pos_hint: {'center': (.5, .17)}
-                    on_press:
-                        root.manager.transition.direction = 'right'
-                        root.manager.current = 'second'
-                         
-                Button:
-                    text: "Replay"
-                    background_color: 0.47, 2, 0.078, 1
-                    size_hint: None, None
-                    size: 200, 60 
-                    pos_hint: {'center': (.5, .07)}
-                    on_press: root.play_sound() 
+        size_hint: (1, 1)
+        height: self.minimum_height
+        pos_hint: {'x': 0, 'y': 0.1}
+        padding: 20,0,0,0  
+        
+        ScrollView:
+            id: scrollview
+            name:'scrollview'
+            do_scroll_x: False
+            do_scroll_y: True 
+    
             
-                Button:
-                    text: "Quit"
-                    background_color: 0.47, 2, 0.078, 1
-                    size_hint: None, None
-                    size: 200, 60 
-                    pos_hint: {'center': (.5, .07)}
-                    on_press: app.stop()
+            Label:
+                id: _label
+                padding: ['20dp','55dp']
+                size_hint: (1, None)
+                font_size: 40
+                text_size: root.width, None
+               
+                size: self.texture_size
+                text: root.fileoutput
+                width:  max(self.texture_size[0], self.parent.width)
+                height: 500
+                halign: 'left'
+                valign: 'top'
+                markup: True
+        
+   
+    BoxLayout:
+        cols: 1
+        spacing: 40
+        
+        Button:
+            text: 'Back to Camera'
+            background_normal: ''
+            background_color:  1, .647, 0, .8
+            size_hint: 1, .1
+                                  
+            pos_hint: {'x': 0}
+            on_press:
+                root.manager.transition.direction = 'right'
+                root.manager.current = 'second'
+                
+        Button:
+            text: "Replay"
+            background_normal: ''
+            background_color:  1, .647, 0, .8
+            size_hint: 1,.1
+           
+            pos_hint: {'center_x': .5}
+            on_press: root.play_sound(), root.showtext() 
+        
+        Button:
+            text: "Pause"
+            background_normal: ''
+            background_color:  1, .647, 0, .8
+            size_hint: 1, .1
+           
+            pos_hint: {'right': .7}
+            on_release: root.stop_sound()
+    
+        Button:
+            text: "Quit"
+            background_normal: ''
+            background_color:  1, .647, 0, .8
+            size_hint: 1, .1
+           
+            pos_hint: {'right': 2}
+            on_press: app.stop()
+    
+            
+ 
 
-                     
+                
+                       
+
+            
+                 
+                
+
+            
+ 
+
+                
+                       
+
+            
+                 
+                
 
 
+            
+ 
 
-                     
+                
+                       
 
-
+            
+                 
+                
