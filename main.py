@@ -21,7 +21,6 @@ from kivy.clock import mainthread
 from kivy.core.audio import SoundLoader
 from kivy.uix.floatlayout import FloatLayout
 from os import path
-from pydub import AudioSegment
 from kivy.uix.scatter import Scatter
 import cv2
 import time
@@ -52,9 +51,12 @@ from kivy.properties import StringProperty
 from kivy.uix.scrollview import ScrollView 
 
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
 
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS']= r'C:\Users\justi\Desktop\IT 7133 Enterprise AI Applications\project\venv\new.json'
+
+
+os.environ['GOOGLE_APPLICATION_CREDENTIALS']= r'new.json'
 Config.set('graphics', 'resizable', False)
 Config.set('graphics','width', '360')
 Config.set('graphics', 'height', '540')
@@ -94,7 +96,7 @@ class SecondWindow(Screen):
                 "Hindi": "hi", "Hungarian": "hu", "Icelandic": "is", "Indonesian": "id",
                 "Italian": "it", "Japanese": "ja", "Kannada": "kn",
                 "Korean": "ko", "Latvian": "lv", "Malay": "ms", "Malayalam": "ml",
-                "Mandairn": "zh", "Norwegian": "no", "Polish": "pl", "Portuguese": "pt",
+                "Mandarin": "zh", "Norwegian": "no", "Polish": "pl", "Portuguese": "pt",
                 "Punjabi": "pa", "Romanian": "ro", "Russian": "ru", "Serbian": "sr",
                 "Slovak": "sk", "Spanish": "es", "Swedish": "sv", "Tamil": "ta", "Telugu": "te",
                 "Thai": "th", "Turkish": "tr", "Ukrainian": "uk", "Vietnamese": "vi"}
@@ -127,13 +129,19 @@ class SecondWindow(Screen):
 
 
 class ThirdWindow(Screen): 
+    
+    message = StringProperty()
+
+    def retranslate(self, language):
+        texts = {"en": "Hello World", "fr": "Salut monde"}
+        self.message = texts.get(language, "")
 
     def on_pre_enter(self):
         self.showtext()
         self.ids.scrollview.scroll_y = 1
         
     def showtext(self):
-        with open("transtext.txt","r") as f:
+        with open("transtext.txt","r", encoding="utf-8") as f:
             self.ids['_label'].text = f.read()
         self.ids.scrollview.scroll_y = 1
 
@@ -146,12 +154,12 @@ class ThirdWindow(Screen):
         if sound: 
             sound.stop()
     
-    with open('transtext.txt', 'w') as f: 
+    with open('transtext.txt', 'w', encoding="utf-8") as f: 
         f.write('Welcome')
         f.close()
-        
-    show = open(r"transtext.txt","r") 
-    fileoutput = StringProperty(show.read())
+ 
+    show = open(r"transtext.txt","r", encoding="utf-8") 
+    fileoutput = StringProperty(show.read(), encoding="utf-8")
     show.close()
     
         
@@ -224,12 +232,14 @@ def detectText(infile):
 
     result = translate_client.translate(text, target_language=target)
 
-    text = result["translatedText"]
+    
     
     print(u"Translation: {}".format(result["translatedText"]))
     print(u"Detected source language: {}".format(
         result["detectedSourceLanguage"]))
-    with open('transtext.txt', 'w') as f:
+
+    text = format(result["translatedText"])
+    with open('transtext.txt', 'w', encoding="utf-8") as f:
         f.write(text)
         f.close() 
            
